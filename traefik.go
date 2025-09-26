@@ -98,7 +98,7 @@ func (t *Traefik) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg
 	}
 
 	w.WriteMsg(m)
-	return m.Rcode, nil
+	return 0, nil
 }
 
 func (t *Traefik) start() error {
