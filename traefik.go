@@ -83,23 +83,22 @@ func (t *Traefik) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg
 	}
 
 	m := new(dns.Msg)
+	m.SetReply(r)
+	m.Authoritative = true
+	m.Answer = answers
+
 	if len(answers) == 0 {
 		if t.Fall.Through(qname) && t.Next != nil {
 			log.Debug("Falling through. 0 answers")
 			return plugin.NextOrFailure(t.Name(), t.Next, ctx, w, r)
 		}
 
-		log.Debug("Returning NXDOMAIN")
+		log.Debugf("Returning NXDOMAIN for %s", qname)
 		m.Rcode = dns.RcodeNameError
 	}
 
-	m.SetReply(r)
-	m.Authoritative = true
-	m.Answer = answers
-
-	//goland:noinspection ALL
 	w.WriteMsg(m)
-	return r.Rcode, nil
+	return m.Rcode, nil
 }
 
 func (t *Traefik) start() error {
