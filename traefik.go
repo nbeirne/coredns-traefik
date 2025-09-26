@@ -99,7 +99,7 @@ func (t *Traefik) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg
 
 	//goland:noinspection ALL
 	w.WriteMsg(m)
-	return dns.RcodeSuccess, nil
+	return r.Rcode, nil
 }
 
 func (t *Traefik) start() error {
